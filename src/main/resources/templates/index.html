@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <title>LiMo</title>
+</head>
+<body>
+
+
+
+  <div class="box">
+    <form method="POST" enctype="multipart/form-data" action="/upload" id="uploadform">
+      <div>
+        <input type="file" name="file" id="file" class="inputfile"/>
+         <label for="file" class="right">Upload an image file</label>
+      </div>
+    </form>
+  </div>
+
+  <!-- auto start upload -->
+  <script>
+    document.getElementById("file").onchange = function() {
+        document.getElementById("uploadform").submit();
+    };
+  </script>
+
+
+</body>
+</html>

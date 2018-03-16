@@ -1,0 +1,76 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <title>LiMo</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+
+    <link rel="stylesheet" media="screen" href="../static/css/analyze.css" th:href="@{/css/analyze.css}"/>
+
+    <script src="/js/analyze.js" th:href="@{/js/analyze.js}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/svg.js/2.6.4/svg.js"></script>
+    <script src="/js/svg.draw.js" th:href="@{/js/svg.draw.js}"></script>
+    <script src="/js/svg.panzoom.js" th:href="@{/js/svg.panzoom.js}"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+</head>
+
+<body>
+
+<span th:text="${'/image/' + imagepath}"></span>
+
+<div id="drawing"></div>
+
+</body>
+
+
+
+<script th:inline="javascript" async="async">
+    /*<![CDATA[*/
+    'use strict';
+
+    //prevent firefox image drag
+    $(document).on("dragstart", function() {
+        return false;
+    });
+
+
+    var draw = SVG("drawing").size(1000,1000);
+    var rect = draw.rect(100,100).attr({fill: '#f06'});
+    var image = draw.image([[${'/image/' + imagepath}]]);
+
+    //enable zoom
+    draw.panZoom({zoomMin: 0.5, zoomMax: 20});
+
+    //draw lines
+
+    const option = {
+        stroke: '#0300ff',
+        'stroke-width': 2,
+        'fill-opacity': 0
+    };
+
+    var line = null;
+
+    draw.on('mousedown', function (event) {
+        if(event.ctrlKey) {
+            line = draw.polyline().attr(option);
+            line.draw(event);
+        }
+    });
+
+    draw.on('mousemove', function (event) {
+        if (line) {
+            line.draw('point', event);
+        }
+    });
+
+    draw.on('mouseup', function (event) {
+        if (line) {
+            line.draw('stop', event);
+        }
+    });
+
+</script>
+</html>
