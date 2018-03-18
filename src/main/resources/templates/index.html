@@ -1,21 +1,45 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8"/>
     <title>LiMo</title>
+
+    <link rel="stylesheet" media="screen" href="../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}"/>
 </head>
 <body>
 
+<div class="container">
 
 
-  <div class="box">
-    <form method="POST" enctype="multipart/form-data" action="/upload" id="uploadform">
-      <div>
-        <input type="file" name="file" id="file" class="inputfile"/>
-         <label for="file" class="right">Upload an image file</label>
-      </div>
-    </form>
-  </div>
+<div class="row">
+    <div class="col-4">
+
+        <br>
+        <br>
+
+        <img src="/img/flechtenicon_new.jpg"/>
+
+        <br>
+        <br>
+
+          <div class="box">
+            <form method="POST" enctype="multipart/form-data" action="/upload" id="uploadform">
+              <div>
+                <input type="file" name="file" id="file" class="inputfile"/>
+                <label for="file" class="right">Upload an image file</label>
+              </div>
+            </form>
+
+              <br>
+
+              <button class="btn btn-default" href="/upload">Example file</button>
+
+          </div>
+
+    </div>
+</div>
+
+</div>
 
   <!-- auto start upload -->
   <script>

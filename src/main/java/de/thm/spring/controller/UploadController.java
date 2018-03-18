@@ -65,7 +65,7 @@ public class UploadController {
     @RequestMapping(value = "/upload", method = RequestMethod.GET)
     public String uploadGet(Model model) {
 
-        model.addAttribute("imagepath", "bild.jpg");
+        model.addAttribute("imagepath", "/img/bild.jpg");
 
         return "analyze";
     }
@@ -77,7 +77,7 @@ public class UploadController {
         String path = createImage(file.getOriginalFilename(), file);
 
 
-        model.addAttribute("imagepath", path);
+        model.addAttribute("imagepath", "image/" +path);
         return "analyze";
     }
 }
