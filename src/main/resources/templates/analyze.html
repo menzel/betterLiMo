@@ -10,6 +10,7 @@
     <link rel="stylesheet" media="screen" href="../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}"/>
 
     <script src="/js/analyze.js" th:href="@{/js/analyze.js}"></script>
+    <script src="/js/floodFill2D.js" th:href="@{/js/floodFill2D.js}"></script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/svg.js/2.6.4/svg.js"></script>
 
@@ -17,10 +18,12 @@
     <script src="/js/svg.panzoom.js" th:href="@{/js/svg.panzoom.js}"></script>
     <script src="/js/svg.filter.js" th:href="@{/js/svg.filter.js}"></script>
 
+    <script src="/js/flood-fill.js" th:href="@{/js/flood-fill.js}"></script>
+    <script src="/js/bucket.js" th:href="@{/js/bucket.js}"></script>
 
     <script type="text/javascript" src="http://canvg.github.io/canvg/rgbcolor.js"></script>
     <script type="text/javascript" src="http://canvg.github.io/canvg/StackBlur.js"></script>
-    <script type="text/javascript" src="http://canvg.github.io/canvg/canvg.js"></script>
+    <script src="/js/canvg.js" th:href="@{/js/canvg.js}"></script>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
@@ -79,10 +82,21 @@
 
 
     var svg = SVG("drawing").size(1200,800);
-    svg.image([[${imagepath}]]);
+    var img = svg.image([[${imagepath}]], 1200,800);
+
+
+    var XMLS = new XMLSerializer();
+    var inp_xmls = XMLS.serializeToString(svg.node);
+
+    var can = document.getElementById("canvas");
+    var ctx = can.getContext('2d');
+
+    var s = canvg('canvas', inp_xmls, {ignoreMouse: true, ignoreAnimation: true});
+    s.stop();
+
 
     //enable zoom
-    //var zoom = svg.panZoom({zoomMin: 0.5, zoomMax: 20});
+    // var zoom = svg.panZoom({zoomMin: 0.5, zoomMax: 20});
 
 
     //draw lines
@@ -110,28 +124,42 @@
     svg.on('mouseup', function (event) {
         if (line) {
             line.draw('stop', event);
+
+            inp_xmls = XMLS.serializeToString(svg.node);
+            s.loadXml(ctx, inp_xmls);
         }
     });
 
-</script>
-
-<script>
     // flood fill
 
     svg.on('click', function (event) {
 
-        var XMLS = new XMLSerializer();
-        var inp_xmls = XMLS.serializeToString(svg.node);
+        // stop default actions
+        event.preventDefault();
 
-        canvg('canvas', inp_xmls);
-
-        //TODO use canvg to print the current image on a canvas
-        //use get image data:
-        var pixelData = document.getElementById("canvas").getContext('2d').getImageData(event.offsetX, event.offsetY, 1, 1).data;
-
+        var pixelData = ctx.getImageData(event.offsetX, event.offsetY, 1, 1).data;
         document.getElementById("color").style.backgroundColor = "rgb(" + pixelData[0] + "," + pixelData[1] + "," + pixelData[2] + ")";
-        console.log("background-color: rgb(" + pixelData[0] + "," + pixelData[1] + "," + pixelData[2] + ")");
 
+        var x = event.pageX - 350;
+        var y = event.pageY;
+
+        // console.log(x  + ":"  + y);
+
+        // draw new image on lower canvas
+        s.draw();
+
+        // do bucket fill
+        Bucket(can, {}, event);
+
+
+        // get image from lower canvas
+        var current = svg.image(can.toDataURL());
+
+        // update upper svg from lower canvas, overlay new image
+        current.node.onload = function () {
+            inp_xmls = XMLS.serializeToString(svg.node);
+            s.loadXml(ctx, inp_xmls);
+        };
 
     });
 
