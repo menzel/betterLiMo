@@ -137,12 +137,15 @@
     var species = [];
     var current = -1;
 
+
+    // TODO save areas not per species, but in a list of lists were the are and the species id is saved
+
     function addSpecies(name) {
 
         var spec = {};
         spec.name = name;
         spec.color = getRandomColor();
-        spec.area = 0;
+        spec.area = [];
 
         species.push(spec);
 
@@ -156,14 +159,24 @@
     displaySpecies();
 
     function addArea(area) {
-        species[current].area += area;
+        species[current].area.push(area);
         console.log("added " + area + " to " + species[current].name);
         displaySpecies();
+        last = current;
     }
 
     function getCurrentColor(){
         return species[current].color;
     }
+
+    function sum(total, num) {
+        return total + num;
+    }
+
+    function undoAddArea() {
+
+    }
+
 
     function displaySpecies() {
         var spec_table = document.getElementById("species");
@@ -179,7 +192,7 @@
             var name = row.insertCell(0);
 
             name.innerText = species[i].name;
-            area.innerText = species[i].area + "";
+            area.innerText = Math.round(species[i].area.reduce(sum)) + "";
             color.style.backgroundColor = species[i].color;
 
             if (i === current) {
@@ -271,10 +284,9 @@
 
         var col = getCurrentColor();
         // do bucket fill on lower canvas
-        var area = Bucket(can, {}, event, col);
+        var bucket = Bucket(can, {}, event, col);
 
-        console.log(area);
-        addArea(10);
+        addArea(bucket.area/6.78);
 
         // get image from lower canvas
         var current = svg.image(can.toDataURL());

@@ -70,7 +70,6 @@ function flood_fill(image_data, get_point_offset, point, colour, target, toleran
         }
     }
 
-    console.log("max points: " + m);
     return m;
 }
 

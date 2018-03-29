@@ -50,7 +50,7 @@ function Bucket(canvas, cfg, event, color) {
     // Push the updated image data back to the canvas
     context.putImageData(image_data, 0, 0);
 
-    return f;
+    this.area = f;
 }
 
 // Getter/setter for colour which validates and parses the set value
