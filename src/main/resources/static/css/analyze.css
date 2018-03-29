@@ -29,3 +29,7 @@ body {
 #magcanvas{
     margin-top: 5px;
 }
+
+#canvas{
+    visibility: hidden;
+}

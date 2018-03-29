@@ -9,6 +9,8 @@
     <link rel="stylesheet" media="screen" href="../static/css/analyze.css" th:href="@{/css/analyze.css}"/>
     <link rel="stylesheet" media="screen" href="../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}"/>
 
+    <link rel="stylesheet" media="screen" href="../static/css/bootstrap-select.less" th:href="@{/css/bootstrap-select.less}"/>
+
     <script src="/js/analyze.js" th:href="@{/js/analyze.js}"></script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/svg.js/2.6.4/svg.js"></script>
@@ -21,12 +23,14 @@
     <script src="/js/bucket.js" th:href="@{/js/bucket.js}"></script>
 
 
+
     <script type="text/javascript" src="http://canvg.github.io/canvg/rgbcolor.js"></script>
     <script type="text/javascript" src="http://canvg.github.io/canvg/StackBlur.js"></script>
     <script src="/js/canvg.js" th:href="@{/js/canvg.js}"></script>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
+    <script src="/js/bootstrap-select.js" th:href="@{/js/bootstrap-select.js}"></script>
 </head>
 
 <body>
@@ -38,16 +42,38 @@
 <div class="row">
     <div class="col-2">
 
-        <span th:text="${imagepath}"></span>
+        <span th:text="${'current file: ' + imagepath}"></span>
 
-        <table class="table table-hover table-striped">
-            <tr><th>Species</th></tr>
-            <tr><td><button type="button" class="btn btn-success">Add to species +</button></td></tr>
-
+        <table id="species" class="table">
+            <thead>
+                <tr><th>Species</th>
+                    <th>Area (mm^2)</th>
+                    <th>Color</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
         </table>
 
-        <div id="color"></div>
+        <div class="btn-group btn-group-vertical" role="group" aria-label="...">
 
+            <select class="selectpicker" data-live-search="true">
+               <option>laevipila,lae</option>
+               <option>muralis,mur  </option>
+               <option>pagorum,pag  </option>
+               <option>papillosa,pap</option>
+               <option>virescens,vir</option>
+            </select>
+
+            <button type="button" class="btn btn-info">Add species</button>
+            <br>
+
+            <br>
+
+            <button type="button" class="btn btn-success">Export results</button>
+            <br>
+
+            <button type="button" class="btn btn-warning">Upload new slide</button>
+        </div>
 
     </div>
 
@@ -92,6 +118,77 @@
 
 </body>
 
+
+<script>
+    $('.selectpicker').selectpicker({
+        style: 'btn btn-info'
+    });
+
+    function getRandomColor() {
+        var letters = '0123456789ABCDEF';
+        var color = '#';
+        for (var i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 16)];
+        }
+        return color;
+    }
+
+
+    var species = [];
+    var current = -1;
+
+    function addSpecies(name) {
+
+        var spec = {};
+        spec.name = name;
+        spec.color = getRandomColor();
+        spec.area = 0;
+
+        species.push(spec);
+
+        current = species.length - 1;
+        displaySpecies();
+    }
+
+
+    addSpecies("foobar");
+    addSpecies("other");
+    displaySpecies();
+
+    function addArea(area) {
+        species[current].area += area;
+        console.log("added " + area + " to " + species[current].name);
+        displaySpecies();
+    }
+
+    function getCurrentColor(){
+        return species[current].color;
+    }
+
+    function displaySpecies() {
+        var spec_table = document.getElementById("species");
+        spec_table.getElementsByTagName('tbody')[0].innerHTML = "";
+        var body = spec_table.getElementsByTagName('tbody')[0];
+
+        for(var i = 0; i < species.length; i++) {
+
+            var row = body.insertRow(0);
+
+            var color = row.insertCell(0);
+            var area = row.insertCell(0);
+            var name = row.insertCell(0);
+
+            name.innerText = species[i].name;
+            area.innerText = species[i].area + "";
+            color.style.backgroundColor = species[i].color;
+
+            if (i === current) {
+                row.style.backgroundColor = "#5d97aa";
+            }
+        }
+    }
+
+</script>
 
 
 <script th:inline="javascript" async="async">
@@ -172,8 +269,12 @@
         // draw new image on lower canvas
         s.draw();
 
+        var col = getCurrentColor();
         // do bucket fill on lower canvas
-        Bucket(can, {}, event);
+        var area = Bucket(can, {}, event, col);
+
+        console.log(area);
+        addArea(10);
 
         // get image from lower canvas
         var current = svg.image(can.toDataURL());
@@ -182,7 +283,6 @@
         current.node.onload = function () {
             drawDown();
         };
-
     });
 
 

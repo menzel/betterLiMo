@@ -1,7 +1,7 @@
 // Bucket tool for canvas, using the flood_fill function
-function Bucket(canvas, cfg, event) {
+function Bucket(canvas, cfg, event, color) {
     if(!(this instanceof Bucket)) {
-        return new Bucket(canvas, cfg, event);
+        return new Bucket(canvas, cfg, event, color);
     }
 
     var _this = this,
@@ -11,7 +11,7 @@ function Bucket(canvas, cfg, event) {
     cfg = cfg || {};
 
     // Apply defaults
-    this.colour = '#8a573c';
+    this.colour = color; //'#8a573c';
 
     this.active = cfg.active === undefined ? true : !!cfg.active;
 
@@ -49,6 +49,8 @@ function Bucket(canvas, cfg, event) {
 
     // Push the updated image data back to the canvas
     context.putImageData(image_data, 0, 0);
+
+    return f;
 }
 
 // Getter/setter for colour which validates and parses the set value

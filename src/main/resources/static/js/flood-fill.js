@@ -70,7 +70,8 @@ function flood_fill(image_data, get_point_offset, point, colour, target, toleran
         }
     }
 
-    console.log("max points: " + m)
+    console.log("max points: " + m);
+    return m;
 }
 
 // Static props for adjustment steps to use in fill algorithm (4-way is default) and a getter
