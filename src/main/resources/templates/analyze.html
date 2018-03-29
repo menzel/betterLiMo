@@ -127,6 +127,7 @@
         if(svg.index(last) > 1) {
             last.remove();
             drawDown();
+            s.draw();
         }
         // TODO remove pixel count
     }
@@ -162,7 +163,6 @@
         }
     });
 
-    // flood fill
 
     svg.on('click', function (event) {
 
@@ -174,7 +174,6 @@
 
         // do bucket fill on lower canvas
         Bucket(can, {}, event);
-
 
         // get image from lower canvas
         var current = svg.image(can.toDataURL());
@@ -202,7 +201,7 @@
         document.getElementById("pos").innerText = "position: " + x  + ":"  + y;
 
         // var pixelData = ctx.getImageData(x, y, 200, 200).data;
-        x = x - 100/zoomlevel;
+        x = x - (100/zoomlevel) - 10;
         y = y - (100/zoomlevel) - 10;
 
         zoomCtx.drawImage(can,x,y,200/zoomlevel,200/zoomlevel,0,0,200,200);
@@ -210,10 +209,10 @@
 
         //crosshair
         zoomCtx.beginPath();
-        zoomCtx.moveTo(100,0);
-        zoomCtx.lineTo(100,200);
-        zoomCtx.moveTo(0,100);
-        zoomCtx.lineTo(200,100);
+        zoomCtx.moveTo(100,50);
+        zoomCtx.lineTo(100,150);
+        zoomCtx.moveTo(50,100);
+        zoomCtx.lineTo(150,100);
         zoomCtx.stroke();
     });
 
@@ -227,6 +226,7 @@
     function drawDown() {
         inp_xmls = XMLS.serializeToString(svg.node);
         s.loadXml(ctx, inp_xmls);
+        s.stop();
     }
 
     function setZoom(val) {

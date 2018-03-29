@@ -1,7 +1,8 @@
 
 body {
     background:#eee;
-    padding-top: 10px;
+    padding: 10px;
+    overflow: hidden;
 }
 
 #drawing {
