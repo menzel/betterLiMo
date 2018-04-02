@@ -98,9 +98,20 @@
     </div>
 
     <div class="col-2">
-        <button type="button" class="btn btn-outline-secondary" onclick="undo()">Undo</button>
 
-        <label for="tolerance">Threshold</label><input type="number" id="tolerance" value="80"/>
+        <div class="btn-group btn-group-vertical" role="group" aria-label="...">
+            <button type="button" class="btn btn-outline-secondary" onclick="undo()">Undo</button>
+            <br>
+
+            <div class="input-group">
+                <label for="tolerance">Threshold:&nbsp;</label>
+
+                <span class="input-group-btn">
+                    <input type="number" id="tolerance" value="80" min="0" max="150"/>
+                </span>
+
+            </div>
+        </div>
 
         <div id="magnifier">
 
@@ -192,8 +203,7 @@
         displaySpecies();
     }
 
-    //288690/(200*200)
-    var factor = 479293/62370; // px^2 / mm ^2
+    var factor = 289790/(200*200); // px^2 / mm ^2
 
     function addArea(px) {
         var area = px/factor;
