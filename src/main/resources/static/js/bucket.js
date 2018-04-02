@@ -16,7 +16,6 @@ function Bucket(canvas, cfg, event, color) {
     this.active = cfg.active === undefined ? true : !!cfg.active;
 
     this.tolerance = cfg.tolerance === undefined || isNaN('' + cfg.tolerance) ? 10 : cfg.tolerance;
-
     this.fill_tolerance = cfg.fill_tolerance === undefined || isNaN('' + cfg.fill_tolerance) ? 1 : cfg.fill_tolerance;
 
     var x = event.offsetX,

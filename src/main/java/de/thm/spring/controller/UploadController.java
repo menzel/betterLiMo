@@ -1,6 +1,8 @@
 package de.thm.spring.controller;
 
 import org.apache.catalina.servlet4preview.http.HttpServletRequest;
+import org.apache.commons.exec.CommandLine;
+import org.apache.commons.exec.DefaultExecutor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -41,13 +43,14 @@ public class UploadController {
 
     private String createImage(String name, MultipartFile file) {
         try {
-            createPizzaImagesDirIfNeeded();
-            File image = new File(limo_IMAGES_DIR_ABSOLUTE_PATH + name);
+            createLiMoImagesDirIfNeeded();
+            String path = limo_IMAGES_DIR_ABSOLUTE_PATH + name;
+            File image = new File(path);
             BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(image));
             stream.write(file.getBytes());
             stream.close();
 
-            return name;
+            return path;
         } catch (Exception e) {
             return String.format("failed", name, e.getMessage());
         }
@@ -55,7 +58,7 @@ public class UploadController {
 
 
 
-    private void createPizzaImagesDirIfNeeded() {
+    private void createLiMoImagesDirIfNeeded() {
         if (!limo_IMAGES_DIR.exists()) {
             limo_IMAGES_DIR.mkdirs();
         }
@@ -75,10 +78,18 @@ public class UploadController {
     public String uploadTrack(Model model, @RequestParam("file") MultipartFile file, HttpSession httpSession) {
 
         String path = createImage(file.getOriginalFilename(), file);
+        String cmd = "convert " + path +  " -level 30%,80% "  + path;
 
-        //TODO call: convert path -level 30%,80% path
+        DefaultExecutor exe = new DefaultExecutor();
 
-        model.addAttribute("imagepath", "image/" + path);
+        try {
+            exe.execute(CommandLine.parse(cmd));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        model.addAttribute("imagepath", "image/" + file.getOriginalFilename());
+
         return "analyze";
     }
 }
