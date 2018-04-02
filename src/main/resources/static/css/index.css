@@ -1,0 +1,45 @@
+.container{
+    padding-top: 10px;
+}
+
+.container::after {
+  content: "";
+  background-image: url("/img/bg.jpeg");
+  opacity: 0.3;
+  top: 0;
+  left: 50px;
+  bottom: 0;
+  right: 50px;
+  position: absolute;
+  z-index: -1;
+}
+
+.gray{
+    background-color: #eeeeee;
+}
+
+.content{
+    border: 1px solid #cfcfcf;
+    padding: 20px;
+    margin: 10px;
+}
+
+.right{
+    float: right;
+}
+
+.left{
+    float: left;
+}
+
+.colored{
+    background-color: #ffbf60;
+}
+
+.header{
+    font-size: 4.0rem;
+}
+
+.news{
+    overflow-y: scroll;
+}

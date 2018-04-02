@@ -76,8 +76,9 @@ public class UploadController {
 
         String path = createImage(file.getOriginalFilename(), file);
 
+        //TODO call: convert path -level 30%,80% path
 
-        model.addAttribute("imagepath", "image/" +path);
+        model.addAttribute("imagepath", "image/" + path);
         return "analyze";
     }
 }

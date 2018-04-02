@@ -13,7 +13,7 @@
 
     <script src="/js/analyze.js" th:href="@{/js/analyze.js}"></script>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/svg.js/2.6.4/svg.js"></script>
+    <script src="/js/svg.js" th:href="@{/js/svg.js}"></script>
 
     <script src="/js/svg.draw.js" th:href="@{/js/svg.draw.js}"></script>
     <script src="/js/svg.panzoom.js" th:href="@{/js/svg.panzoom.js}"></script>
@@ -23,12 +23,12 @@
     <script src="/js/bucket.js" th:href="@{/js/bucket.js}"></script>
 
 
+    <script src="/js/rgbcolor.js" th:href="@{/js/rgbcolor.js}"></script>
+    <script src="/js/StackBlur.js" th:href="@{/js/StackBlur.js}"></script>
 
-    <script type="text/javascript" src="http://canvg.github.io/canvg/rgbcolor.js"></script>
-    <script type="text/javascript" src="http://canvg.github.io/canvg/StackBlur.js"></script>
     <script src="/js/canvg.js" th:href="@{/js/canvg.js}"></script>
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="/js/jquery.min.js" th:href="@{/js/jquery.min.js}"></script>
 
     <script src="/js/bootstrap-select.js" th:href="@{/js/bootstrap-select.js}"></script>
 </head>
@@ -56,23 +56,27 @@
 
         <div class="btn-group btn-group-vertical" role="group" aria-label="...">
 
-            <select class="selectpicker" data-live-search="true">
-               <option>laevipila,lae</option>
-               <option>muralis,mur  </option>
-               <option>pagorum,pag  </option>
-               <option>papillosa,pap</option>
-               <option>virescens,vir</option>
-            </select>
+            <div class="input-group">
+                <select class="form-control" id="speciesselect">
+                   <option>laevipila,lae</option>
+                   <option>muralis,mur  </option>
+                   <option>pagorum,pag  </option>
+                   <option>papillosa,pap</option>
+                   <option>virescens,vir</option>
+                </select>
+                <span class="input-group-btn">
+                    <button type="button" class="btn btn-outline-info" onclick="addSpecies()">Add species</button>
+                </span>
+            </div>
 
-            <button type="button" class="btn btn-info">Add species</button>
             <br>
 
             <br>
 
-            <button type="button" class="btn btn-success">Export results</button>
+            <button type="button" class="btn btn-outline-success">Export results</button>
             <br>
 
-            <button type="button" class="btn btn-warning">Upload new slide</button>
+            <input type="button" class="btn btn-outline-warning" onclick="location.href='../';" value="Upload a new slide" />
         </div>
 
     </div>
@@ -118,13 +122,36 @@
 
 </body>
 
+<script>
+    // prevent accidentally closing the tab
+
+    //window.onbeforeunload = function(e) {
+    //    return 'Dialog text here.';
+    //};
+</script>
+
 
 <script>
     $('.selectpicker').selectpicker({
         style: 'btn btn-info'
     });
 
-    function getRandomColor() {
+    var c = 0;
+    var cols = ['#A52A2A',
+        '#5F9EA0',
+        '#D2691E',
+        '#f4c742',
+        '#006400',
+        '#9932CC',
+        '#00ad0d',
+        '#000080'];
+
+
+    function nextColor() {
+        if (c < cols.length){
+            return cols[c++];
+        }
+
         var letters = '0123456789ABCDEF';
         var color = '#';
         for (var i = 0; i < 6; i++) {
@@ -136,16 +163,24 @@
 
     var species = [];
     var current = -1;
+    var nextid = 0;
+    fills = [];
 
+    function addSpecies() {
 
-    // TODO save areas not per species, but in a list of lists were the are and the species id is saved
+        var e = document.getElementById("speciesselect");
+        var name = e.options[e.selectedIndex].text;
 
-    function addSpecies(name) {
+        addSpeciesToTable(name);
+    }
+
+    function addSpeciesToTable(name) {
 
         var spec = {};
         spec.name = name;
-        spec.color = getRandomColor();
-        spec.area = [];
+        spec.color = nextColor();
+        spec.id = nextid;
+        nextid++;
 
         species.push(spec);
 
@@ -153,30 +188,41 @@
         displaySpecies();
     }
 
-
-    addSpecies("foobar");
-    addSpecies("other");
-    displaySpecies();
-
     function addArea(area) {
-        species[current].area.push(area);
+
+        fills.push([species[current].id, area]);
         console.log("added " + area + " to " + species[current].name);
         displaySpecies();
-        last = current;
     }
 
     function getCurrentColor(){
+
+        // this is the first function called upon click, so init a new species here
+        if(current === -1){
+            addSpeciesToTable("Unknown");
+        }
+
         return species[current].color;
     }
 
-    function sum(total, num) {
-        return total + num;
-    }
-
     function undoAddArea() {
-
+        fills.pop();
+        displaySpecies();
     }
 
+    function getarea(id) {
+
+        var total = 0;
+
+        for(var i = 0 ; i < fills.length; i++){
+            if(fills[i][0] === id){
+                total += fills[i][1];
+
+            }
+        }
+
+        return Math.round(total);
+    }
 
     function displaySpecies() {
         var spec_table = document.getElementById("species");
@@ -186,19 +232,38 @@
         for(var i = 0; i < species.length; i++) {
 
             var row = body.insertRow(0);
+            row.classList.add("clickablerow");
+            row.id = species[i].id;
 
             var color = row.insertCell(0);
             var area = row.insertCell(0);
             var name = row.insertCell(0);
 
             name.innerText = species[i].name;
-            area.innerText = Math.round(species[i].area.reduce(sum)) + "";
+            area.innerText = getarea(species[i].id);
             color.style.backgroundColor = species[i].color;
 
             if (i === current) {
                 row.style.backgroundColor = "#5d97aa";
             }
         }
+
+        // select species from table
+        jQuery(document).ready(function($) {
+            $(".clickablerow").click(function() {
+
+                var id = $(this).attr("id");
+                current = parseInt(id); // current is equivalent to the position in the species list, which is the same as the id
+                console.log("current is " + id + " " + species[id].name);
+
+                displaySpecies(); // speed up by only change background colors
+
+            });
+        });
+
+
+
+
     }
 
 </script>
@@ -239,7 +304,8 @@
             drawDown();
             s.draw();
         }
-        // TODO remove pixel count
+
+        undoAddArea();
     }
 
 
@@ -300,7 +366,6 @@
 
     var zoomCtx = document.getElementById("magcanvas").getContext('2d');
     zoomCtx.imageSmoothingEnabled = false;
-    zoomCtx.mozImageSmoothingEnabled = false;
     zoomCtx.webkitImageSmoothingEnabled = false;
     zoomCtx.msImageSmoothingEnabled = false;
 
@@ -321,10 +386,10 @@
 
         //crosshair
         zoomCtx.beginPath();
-        zoomCtx.moveTo(100,50);
-        zoomCtx.lineTo(100,150);
-        zoomCtx.moveTo(50,100);
-        zoomCtx.lineTo(150,100);
+        zoomCtx.moveTo(100,70);
+        zoomCtx.lineTo(100,130);
+        zoomCtx.moveTo(70,100);
+        zoomCtx.lineTo(130,100);
         zoomCtx.stroke();
     });
 

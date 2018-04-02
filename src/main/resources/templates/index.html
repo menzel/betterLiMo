@@ -5,41 +5,115 @@
     <title>LiMo</title>
 
     <link rel="stylesheet" media="screen" href="../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" media="screen" href="../static/css/index.css" th:href="@{/css/index.css}"/>
+    <link rel="stylesheet" media="screen" href="../static/css/application.css" th:href="@{/css/application.css}"/>
 </head>
 <body>
 
-<div class="container">
+<div class="container align-content-center">
+
+    <div class="row">
+
+        <div class="col-3">
+            <img src="/img/flechtenicon_new.jpg"/>
+        </div>
 
 
-<div class="row">
-    <div class="col-4">
+        <div class="col-8">
+            <span class="header">LiMo-Analyse</span>
+        </div>
+    </div>
 
-        <br>
-        <br>
+    <div class="row">
 
-        <img src="/img/flechtenicon_new.jpg"/>
+        <div class="col-4">
 
-        <br>
-        <br>
+            <div class="content colored">
 
-          <div class="box">
-            <form method="POST" enctype="multipart/form-data" action="/upload" id="uploadform">
-              <div>
-                <input type="file" name="file" id="file" class="inputfile"/>
-                <label for="file" class="right">Upload an image file</label>
-              </div>
-            </form>
+                <h6>Folie hochladen:</h6>
+                  <div class="box">
+                    <form method="POST" enctype="multipart/form-data" action="/upload" id="uploadform">
+                      <div>
+                        <input type="file" name="file" id="file" class="inputfile"/>
+                      </div>
+                    </form>
+                  </div>
+            </div>
 
-              <br>
+        </div>
 
-              <button class="btn btn-default" href="/upload">Example file</button>
+        <div class="col-3">
 
-          </div>
+            <div class="content gray">
+                <h6>Beispielfolie laden:</h6>
+                <a class="btn btn-outline-info" href="/upload">Beispiel</a>
+            </div>
+        </div>
+
+
+        <div class="col-5">
+
+            <div class="content gray">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis sed rutrum eros. Integer non ipsum eu nulla fringilla maximus quis congue nunc. Morbi bibendum, lacus id tincidunt efficitur, augue tellus tristique quam, et hendrerit risus dui non nunc.
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+
+        <div class="col-5">
+
+            <div class="content gray news">
+                <h5>02.04.2018 -- Spezies hinzugefügt</h5>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis sed rutrum eros. Integer non ipsum eu nulla fringilla maximus quis congue nunc. Morbi bibendum, lacus id tincidunt efficitur, augue tellus tristique quam, et hendrerit risus dui non nunc.
+
+                <br>
+                <br>
+
+                <h5>02.04.2018 -- Neue Seite</h5>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis sed rutrum eros. Integer non ipsum eu nulla fringilla maximus quis congue nunc. Morbi bibendum, lacus id tincidunt efficitur, augue tellus tristique quam, et hendrerit risus dui non nunc.
+            </div>
+        </div>
+
+
+        <div class="col-7">
+            <div class="content gray">
+                <img src="/img/screenshot.jpg" height="330"/>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-7">
+
+            <div class="content gray">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis sed rutrum eros. Integer non ipsum eu nulla fringilla maximus quis congue nunc. <br>
+                Sed ut fringilla ligula. Aenean pharetra nec dolor cursus placerat. Nam bibendum risus lacus, a congue risus eleifend a. Nulla lorem velit, ultrices luctus tristique sit amet, sodales eu libero. Aliquam a blandit lacus. Nunc nec elit quis leo elementum scelerisque. Praesent ultrices sagittis sapien, nec posuere risus tristique quis. Nullam sagittis vulputate mauris, vitae auctor turpis vehicula non. Integer vehicula hendrerit sapien, ac venenatis neque facilisis a. Morbi a mattis diam, at fringilla nunc. Curabitur ut turpis urna.
+            </div>
+
+        </div>
+
+        <div class="col-5">
+            <div class="content gray">
+                <h3>Kontakt</h3>
+                <hr>
+                <p><a href="JavaScript: dec('spam@thm.de');" id="mail">EMail anzeigen</a></p>
+
+                <p>Technische Hochschule Mittelhessen <br>
+                    Fachbereich Mathematik, Naturwissenschaften und Informatik (MNI) <br>
+                    Wiesenstr. 14 <br>
+                    35390 Gießen <br>
+                    <a href="https://www.thm.de">https://www.thm.de</a></p>
+
+                <p> Büro: Wiesenstr. 8-11, Gebäude A12 Raum 2.15 <br>
+                    Tel.: 0641/309-2460 </p>
+            </div>
+        </div>
 
     </div>
 </div>
 
-</div>
+
 
   <!-- auto start upload -->
   <script>
