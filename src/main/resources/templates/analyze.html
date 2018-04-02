@@ -11,6 +11,8 @@
 
     <link rel="stylesheet" media="screen" href="../static/css/bootstrap-select.less" th:href="@{/css/bootstrap-select.less}"/>
 
+    <link rel="stylesheet" media="screen" href="../static/css/application.css" th:href="@{/css/application.css}"/>
+
     <script src="/js/analyze.js" th:href="@{/js/analyze.js}"></script>
 
     <script src="/js/svg.js" th:href="@{/js/svg.js}"></script>
@@ -97,6 +99,8 @@
 
     <div class="col-2">
         <button type="button" class="btn btn-outline-secondary" onclick="undo()">Undo</button>
+
+        <label for="tolerance">Threshold</label><input type="number" id="tolerance" value="80"/>
 
         <div id="magnifier">
 
@@ -188,10 +192,14 @@
         displaySpecies();
     }
 
-    function addArea(area) {
+    //288690/(200*200)
+    var factor = 479293/62370; // px^2 / mm ^2
+
+    function addArea(px) {
+        var area = px/factor;
 
         fills.push([species[current].id, area]);
-        console.log("added " + area + " to " + species[current].name);
+        console.log("added " + px + "px^2 " + area + "mm^2 to " + species[current].name);
         displaySpecies();
     }
 
@@ -308,6 +316,41 @@
         undoAddArea();
     }
 
+    function KeyPress(e) {
+        var evtobj = window.event? event : e;
+        if (evtobj.keyCode === 90 && evtobj.ctrlKey) undo();
+    }
+
+    document.onkeydown = KeyPress;
+
+    document.addEventListener('mousewheel',function(event){
+        event.preventDefault();
+
+        var element = document.getElementById("tolerance");
+        var curr = parseInt(element.value);
+
+        if(event.deltaY < 0) {
+            // console.log("up");
+            curr += 1;
+        } else {
+            // console.log("down");
+            curr -= 1;
+        }
+
+        if(curr < 0) curr = 0;
+        if(curr > 150) curr = 150;
+
+        element.value = curr;
+        element.style.backgroundColor = "#ff874f";
+
+        setTimeout(function() {
+            element.style.backgroundColor = "";
+        }, 500);
+
+        return false;
+    }, false);
+
+
 
     //draw lines
     const option = {
@@ -350,10 +393,15 @@
         s.draw();
 
         var col = getCurrentColor();
-        // do bucket fill on lower canvas
-        var bucket = Bucket(can, {}, event, col);
+        var cfg = {};
+        cfg.tolerance = parseInt(document.getElementById("tolerance").value);
 
-        addArea(bucket.area/6.78);
+        // do bucket fill on lower canvas
+        var bucket = Bucket(can, cfg, event, col);
+
+        if(bucket.area > 0){
+            addArea(bucket.area);
+        }
 
         // get image from lower canvas
         var current = svg.image(can.toDataURL());
@@ -361,7 +409,12 @@
         // update upper svg from lower canvas, overlay new image
         current.node.onload = function () {
             drawDown();
+
         };
+
+        //reload zoom div
+        //$('SvgjsSvg1001').trigger('mousemove');
+
     });
 
 

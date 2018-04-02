@@ -32,6 +32,7 @@ function Bucket(canvas, cfg, event, color) {
 
     if(tolerance_equal(target, 0, _this.parsed_colour, _this.fill_tolerance)) {
         // Trying to fill something which is (essentially) the fill colour
+        // TODO fix for refill
         return;
     }
 
@@ -41,7 +42,7 @@ function Bucket(canvas, cfg, event, color) {
         get_point_offset,
         { x: x, y: y },
         _this.parsed_colour,
-        target, _this.tolerance,
+        target, this.tolerance,
         image_data.width,
         image_data.height
     );
