@@ -151,215 +151,32 @@
 <script>
     // prevent accidentally closing the tab
 
-    //window.onbeforeunload = function(e) {
-    //    return 'Dialog text here.';
-    //};
-</script>
+    window.onbeforeunload = function(e) {
+        return 'Do you really want to close the tab?';
+    };
 
-
-<script>
-    $('.selectpicker').selectpicker({
-        style: 'btn btn-info'
-    });
-
-    var c = 0;
-    var cols = ['#A52A2A',
-        '#5F9EA0',
-        '#D2691E',
-        '#f4c742',
-        '#006400',
-        '#9932CC',
-        '#00ad0d',
-        '#000080'];
-
-
-    function nextColor() {
-        if (c < cols.length){
-            return cols[c++];
-        }
-
-        var letters = '0123456789ABCDEF';
-        var color = '#';
-        for (var i = 0; i < 6; i++) {
-            color += letters[Math.floor(Math.random() * 16)];
-        }
-        return color;
-    }
-
-
-    var species = [];
-    var current = -1;
-    var nextid = 0;
-    fills = [];
-
-    function addSpecies() {
-
-        var e = document.getElementById("speciesselect");
-        var name = e.options[e.selectedIndex].text;
-
-        addSpeciesToTable(name);
-    }
-
-    function addSpeciesToTable(name) {
-
-        var spec = {};
-        spec.name = name;
-        spec.color = nextColor();
-        spec.id = nextid;
-        nextid++;
-
-        species.push(spec);
-
-        current = species.length - 1;
-        displaySpecies();
-    }
-
-    // 1200x800px: 289790
-    var factor = 584937/(200*200); // px^2 / mm ^2
-
-    function addArea(px) {
-        var area = px/factor;
-
-        fills.push([species[current].id, area]);
-        console.log("added " + px + "px^2 " + area + "mm^2 to " + species[current].name);
-        displaySpecies();
-    }
-
-    function getCurrentColor(){
-
-        // this is the first function called upon click, so init a new species here
-        if(current === -1){
-            addSpeciesToTable("Unknown");
-        }
-
-        return species[current].color;
-    }
-
-    function undoAddArea() {
-        fills.pop();
-        displaySpecies();
-    }
-
-    function getthallicount(id) {
-         var total = 0;
-
-        for(var i = 0 ; i < fills.length; i++){
-            if(fills[i][0] === id){
-                total++;
-            }
-        }
-
-        return total;
-    }
-
-    function getarea(id) {
-
-        var total = 0;
-
-        for(var i = 0 ; i < fills.length; i++){
-            if(fills[i][0] === id){
-                total += fills[i][1];
-
-            }
-        }
-
-        return Math.round(total);
-    }
-
-    function displaySpecies() {
-        var spec_table = document.getElementById("species");
-        spec_table.getElementsByTagName('tbody')[0].innerHTML = "";
-        var body = spec_table.getElementsByTagName('tbody')[0];
-
-        for(var i = 0; i < species.length; i++) {
-
-            var row = body.insertRow(0);
-            row.classList.add("clickablerow");
-            row.id = species[i].id;
-
-            var color = row.insertCell(0);
-            var area = row.insertCell(0);
-            var name = row.insertCell(0);
-
-            name.innerText = species[i].name;
-            area.innerText = getarea(species[i].id);
-            color.style.backgroundColor = species[i].color;
-
-            if (i === current) {
-                row.style.backgroundColor = "#5d97aa";
-            }
-        }
-
-        // select species from table
-        jQuery(document).ready(function($) {
-            $(".clickablerow").click(function() {
-
-                var id = $(this).attr("id");
-                current = parseInt(id); // current is equivalent to the position in the species list, which is the same as the id
-                console.log("current is " + id + " " + species[id].name);
-
-                displaySpecies(); // speed up by only change background colors
-
-            });
-        });
-
-    }
-
-    function showresults(){
-        var results = [];
-        results.push("id;Gattung;Art;Fläche [mm^2]; Fläche [%]; Anzahl Thalli; Farbe [RGB]");
-
-        for(var i = 0; i < species.length; i++) {
-            var tmp = "";
-            var area = getarea(species[i].id);
-            var count = getthallicount(species[i].id);
-
-
-            tmp += species[i].id;
-            tmp += ";";
-            tmp += species[i].name;
-            tmp += ";";
-            tmp += species[i].name;
-            tmp += ";";
-            tmp += area;
-            tmp += ";";
-            tmp += 100*area/(200*200);
-            tmp += ";";
-            tmp += count;
-            tmp += ";";
-            tmp += species[i].color;
-            tmp += ";";
-
-            results.push(tmp);
-        }
-
-        return results.join("\n");
-    }
-
-    function download(filename) {
-        var element = document.createElement('a');
-        element.setAttribute('href', 'data:text/plain;charset=utf-8,' + showresults());
-        element.setAttribute('download', filename);
-
-        element.style.display = 'none';
-        document.body.appendChild(element);
-
-        element.click();
-
-        document.body.removeChild(element);
-    }
-</script>
-
-
-<script th:inline="javascript" async="async">
-    /*<![CDATA[*/
-    'use strict';
 
     //prevent firefox image drag
     $(document).on("dragstart", function() {
         return false;
     });
 
+    // selector for species
+    $('.selectpicker').selectpicker({
+        style: 'btn btn-info'
+    });
+</script>
+
+
+<script src="/js/species.js" th:href="@{/js/species.js}"></script>
+
+
+<script th:inline="javascript" async="async">
+    /*<![CDATA[*/
+    'use strict';
+
+
+    // Init svg  ///////////////////
 
     var svg = SVG("drawing").size(1131,800);
     var img = svg.image([[${imagepath}]], 1131, 800);
@@ -375,7 +192,10 @@
     s.stop();
     s.draw();
 
-    var zoomlevel = 2;
+
+
+    // Undo ///////////////////
+
 
     function undo() {
         // delete most recent image
@@ -390,10 +210,14 @@
         undoAddArea();
     }
 
+
     function KeyPress(e) {
         var evtobj = window.event? event : e;
         if (evtobj.keyCode === 90 && evtobj.ctrlKey) undo();
     }
+
+
+    // Mouse wheel ///////////////////
 
     document.onkeydown = KeyPress;
 
@@ -425,8 +249,8 @@
     }, false);
 
 
+    // Draw lines ///////////////////
 
-    //draw lines
     const option = {
         stroke: '#0300ff',
         'stroke-width': 2,
@@ -457,6 +281,7 @@
         }
     });
 
+    // Flood Fill ///////////////////
 
     svg.on('click', function (event) {
 
@@ -486,11 +311,10 @@
 
         };
 
-        //reload zoom div
-        //$('SvgjsSvg1001').trigger('mousemove');
-
     });
 
+
+    // Magnification ///////////////////
 
     var zoomCtx = document.getElementById("magcanvas").getContext('2d');
     zoomCtx.imageSmoothingEnabled = false;
@@ -498,16 +322,19 @@
     zoomCtx.msImageSmoothingEnabled = false;
 
 
+    var zoomlevel = 2; // init zoom level
+    var offsety = document.getElementById("SvgjsSvg1001").getBoundingClientRect().left;
+    var offsetx = document.getElementById("SvgjsSvg1001").getBoundingClientRect().top;
+
     svg.on('mousemove', function (event) {
 
-        var x = event.pageX - 350; //TODO set relative value
-        var y = event.pageY;
+        var x = Math.round(event.pageX - offsety); //TODO set relative value
+        var y = Math.round(event.pageY - offsetx);
 
         document.getElementById("pos").innerText = "Position: " + x  + ":"  + y;
 
-        // var pixelData = ctx.getImageData(x, y, 200, 200).data;
-        x = x - (100/zoomlevel) - 10;
-        y = y - (100/zoomlevel) - 10;
+        x = x - (100/zoomlevel);
+        y = y - (100/zoomlevel);
 
         zoomCtx.drawImage(can,x,y,200/zoomlevel,200/zoomlevel,0,0,200,200);
 
@@ -526,6 +353,11 @@
         zoomCtx.clearRect(0,0,200,200);
 
     });
+
+
+
+
+    // Functions ///////////////////
 
 
     function drawDown() {
