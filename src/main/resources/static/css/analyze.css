@@ -9,7 +9,7 @@ body {
     display: block;
     background: #fff;
     border: 1px solid #ccc;
-    width: 1200px;
+    width: 1131px;
     height: 800px;
     margin: auto;
 }
@@ -32,4 +32,8 @@ body {
 
 #canvas{
     visibility: hidden;
+}
+
+#pos{
+    font-size: xx-small;
 }

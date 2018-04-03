@@ -37,8 +37,6 @@ function flood_fill(image_data, get_point_offset, point, colour, target, toleran
         y = point.y;
         offset = get_point_offset(x, y);
 
-        m = Math.max(points.length, m);
-
         // Move to next point if this pixel isn't within tolerance of the colour being filled
         if(!tolerance_equal(image_data, offset, target, tolerance)) {
             continue;
@@ -66,10 +64,10 @@ function flood_fill(image_data, get_point_offset, point, colour, target, toleran
 
             // Push neighbour onto points array to be processed, and tag as seen
             points.push({ x: x2, y: y2 });
+            m++;
             seen[key] = true;
         }
     }
-
     return m;
 }
 

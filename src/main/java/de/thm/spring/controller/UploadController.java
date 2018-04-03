@@ -1,5 +1,6 @@
 package de.thm.spring.controller;
 
+import de.thm.spring.model.Lichen;
 import org.apache.catalina.servlet4preview.http.HttpServletRequest;
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecutor;
@@ -68,17 +69,21 @@ public class UploadController {
     @RequestMapping(value = "/upload", method = RequestMethod.GET)
     public String uploadGet(Model model) {
 
+        Lichen lichen = Lichen.getInstance();
+
         model.addAttribute("imagepath", "/img/bild.jpg");
+        model.addAttribute("filename", "Beispiel.jpg");
+        model.addAttribute("lichen", lichen.getLichen());
 
         return "analyze";
     }
 
 
     @RequestMapping(value = "/upload", method = RequestMethod.POST)
-    public String uploadTrack(Model model, @RequestParam("file") MultipartFile file, HttpSession httpSession) {
+    public String uploadPost(Model model, @RequestParam("file") MultipartFile file, HttpSession httpSession) {
 
         String path = createImage(file.getOriginalFilename(), file);
-        String cmd = "convert " + path +  " -level 30%,80% "  + path;
+        String cmd = "convert " + path +  " -level 30%,80% -sharpen 0x2 "  + path;
 
         DefaultExecutor exe = new DefaultExecutor();
 
@@ -89,6 +94,7 @@ public class UploadController {
         }
 
         model.addAttribute("imagepath", "image/" + file.getOriginalFilename());
+        model.addAttribute("filename", file.getOriginalFilename());
 
         return "analyze";
     }
