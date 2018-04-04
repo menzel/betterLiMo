@@ -6,12 +6,20 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
+/**
+ * Loads and serves the list of lichen for the gui from the file ARTENLISE.INI
+ */
 public class Lichen {
 
     private File initfile = new File("ARTENLISTE.INI");
     private Map<String, List<String>> lichen;
     private static Lichen instance;
 
+    /**
+     * Returns a map of super-group as key and the species names as a list of Strings
+     *
+     * @return
+     */
     public Map<String, List<String>> getLichen() {
         return lichen;
     }
