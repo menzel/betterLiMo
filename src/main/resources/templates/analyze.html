@@ -181,7 +181,6 @@
     var svg = SVG("drawing").size(1131,800);
     var img = svg.image([[${imagepath}]], 1131, 800);
 
-
     var XMLS = new XMLSerializer();
     var inp_xmls = XMLS.serializeToString(svg.node);
 
@@ -190,9 +189,6 @@
 
     var s = canvg('canvas', inp_xmls, {ignoreMouse: true, ignoreAnimation: true});
     s.stop();
-    s.draw();
-
-
 
     // Undo ///////////////////
 
@@ -308,7 +304,6 @@
         // update upper svg from lower canvas, overlay new image
         current.node.onload = function () {
             drawDown();
-
         };
 
     });
@@ -325,6 +320,13 @@
     var zoomlevel = 2; // init zoom level
     var offsety = document.getElementById("SvgjsSvg1001").getBoundingClientRect().left;
     var offsetx = document.getElementById("SvgjsSvg1001").getBoundingClientRect().top;
+
+    // adapt offsets on windows resize
+    window.onresize = function (ev) {
+        offsety = document.getElementById("SvgjsSvg1001").getBoundingClientRect().left;
+        offsetx = document.getElementById("SvgjsSvg1001").getBoundingClientRect().top;
+    };
+
 
     svg.on('mousemove', function (event) {
 
@@ -348,13 +350,15 @@
         zoomCtx.stroke();
     });
 
-    svg.on('mouseout', function (event) {
-
-        zoomCtx.clearRect(0,0,200,200);
-
+    //force draw to lower canvas on mouseenter for zoom
+    svg.on('mouseenter', function () {
+        s.draw();
     });
 
-
+    //clear zoom rect on mouse exit
+    svg.on('mouseout', function (event) {
+        zoomCtx.clearRect(0,0,200,200);
+    });
 
 
     // Functions ///////////////////
@@ -377,6 +381,7 @@
         document.getElementById("zoom" + val).classList.remove("btn-outline-secondary");
         document.getElementById("zoom" + val).classList.add("btn-outline-primary");
     }
+
 
 </script>
 

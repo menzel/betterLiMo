@@ -30,11 +30,11 @@ public class UploadController {
     private static final File limo_IMAGES_DIR = new File(limo_IMAGES_PATH);
     private static final String limo_IMAGES_DIR_ABSOLUTE_PATH = limo_IMAGES_DIR.getAbsolutePath() + File.separator;
 
-    @RequestMapping(value = "/image/{imageName}")
+    @RequestMapping(value = "/image/{imageName:.+}")
     @ResponseBody
     public byte[] getImage(@PathVariable(value = "imageName") String imageName) throws IOException {
 
-        File serverFile = new File(limo_IMAGES_DIR_ABSOLUTE_PATH+ imageName + ".jpg");
+        File serverFile = new File(limo_IMAGES_DIR_ABSOLUTE_PATH + imageName);
 
         return Files.readAllBytes(serverFile.toPath());
     }
@@ -69,11 +69,11 @@ public class UploadController {
     @RequestMapping(value = "/upload", method = RequestMethod.GET)
     public String uploadGet(Model model) {
 
-        Lichen lichen = Lichen.getInstance();
 
         model.addAttribute("imagepath", "/img/bild.jpg");
         model.addAttribute("filename", "Beispiel.jpg");
-        model.addAttribute("lichen", lichen.getLichen());
+
+        model.addAttribute("lichen", Lichen.getInstance().getLichen());
 
         return "analyze";
     }
@@ -95,6 +95,8 @@ public class UploadController {
 
         model.addAttribute("imagepath", "image/" + file.getOriginalFilename());
         model.addAttribute("filename", file.getOriginalFilename());
+
+        model.addAttribute("lichen", Lichen.getInstance().getLichen());
 
         return "analyze";
     }
