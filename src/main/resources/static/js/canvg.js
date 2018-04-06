@@ -2884,7 +2884,6 @@
 			// render loop
 			var isFirstRender = true;
 			var draw = function() {
-				console.log("cavng redraw");
 				svg.ViewPort.Clear();
 				if (ctx.canvas.parentNode) svg.ViewPort.SetCurrent(ctx.canvas.parentNode.clientWidth, ctx.canvas.parentNode.clientHeight);
 
@@ -2959,7 +2958,6 @@
 				// need update from mouse events?
 				if (svg.opts['ignoreMouse'] != true) {
 					needUpdate = needUpdate | svg.Mouse.hasEvents();
-                    console.log("i am here")
 				}
 
 				// need update from animations?

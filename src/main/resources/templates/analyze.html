@@ -13,8 +13,6 @@
 
     <link rel="stylesheet" media="screen" href="../static/css/application.css" th:href="@{/css/application.css}"/>
 
-    <script src="/js/analyze.js" th:href="@{/js/analyze.js}"></script>
-
     <script src="/js/svg.js" th:href="@{/js/svg.js}"></script>
 
     <script src="/js/svg.draw.js" th:href="@{/js/svg.draw.js}"></script>
@@ -35,6 +33,9 @@
     <script src="/js/bootstrap.bundle.min.js" th:href="@{/js/bootstrap.bundle.min.js}"></script>
 
     <script src="/js/bootstrap-select.min.js" th:href="@{/js/bootstrap-select.min.js}"></script>
+
+    <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+    <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
 </head>
 
 <body>
@@ -87,8 +88,6 @@
             <br>
 
             <input type="button" class="btn btn-outline-warning" onclick="location.href='../';" value="Neue Folie hochladen" />
-
-            <input type="button" class="btn btn-outline-warning" onclick="location.href='../';" value="Neue Folie hochladen" />
         </div>
 
     </div>
@@ -112,9 +111,11 @@
 
     <div class="col-2">
 
-        <div class="btn-group btn-group-vertical" role="group" aria-label="...">
-            <button type="button" class="btn btn-outline-secondary" onclick="undo()">Rückgängig</button>
+        <div class="btn-group" role="group" aria-label="...">
+            <button id="undobtn" type="button" class="btn btn-outline-secondary" onclick="undo()">Rückgängig</button>
+            <input id="toggle-one" checked data-on="Zeichnen" data-off="Löschen" data-onstyle="primary" data-offstyle="danger" type="checkbox"/>
             <br>
+
         </div>
 
         <div id="magnifier">
@@ -130,6 +131,7 @@
 
             <canvas id="magcanvas" width="200px" height="200px"></canvas>
         </div>
+
 
 
     </div>
@@ -244,6 +246,23 @@
         'fill-opacity': 0
     };
 
+
+    $(function() {
+        $('#toggle-one').bootstrapToggle();
+    });
+
+
+    $('#toggle-one').change(function () {
+        if (option.stroke === "#fff") {
+            option.stroke = '#0300ff';
+            option['stroke-width'] = 2;
+        }
+        else {
+            option.stroke = "#fff";
+            option['stroke-width'] = 10;
+        }
+    });
+
     var line = null;
 
     svg.on('mousedown', function (event) {
@@ -260,11 +279,13 @@
     });
 
     svg.on('mouseup', function (event) {
-        if (line) {
+
+        if (line !== null) {
             line.draw('stop', event);
 
             drawDown();
-            addArea(0);
+            addArea(0, -1); // species id -1 for drawings
+            line = null;
         }
     });
 
@@ -286,14 +307,14 @@
         var bucket = Bucket(can, cfg, event, col);
 
         if(bucket.area > 0){
-            addArea(bucket.area);
+            addArea(bucket.area, species[current].id);
         }
 
         // get image from lower canvas
-        var current = svg.image(can.toDataURL());
+        var lowerimg = svg.image(can.toDataURL());
 
         // update upper svg from lower canvas, overlay new image
-        current.node.onload = function () {
+        lowerimg.node.onload = function () {
             drawDown();
         };
 

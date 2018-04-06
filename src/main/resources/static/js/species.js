@@ -56,11 +56,10 @@ function addSpeciesToTable(name) {
 // 1200x800px: 289790
 var factor = 584937/(200*200); // px^2 / mm ^2
 
-function addArea(px) {
+function addArea(px, id) {
     var area = px/factor;
 
-    fills.push([species[current].id, area]);
-    console.log("added " + px + "px^2 " + area + "mm^2 to " + species[current].name);
+    fills.push([id, area]);
     displaySpecies();
 }
 
@@ -75,8 +74,9 @@ function getCurrentColor(){
 }
 
 function undoAddArea() {
-    fills.pop();
+    fills.splice(-1,1); // removes last element
     displaySpecies();
+
 }
 
 // Species table left functions ///////////////////
@@ -140,10 +140,8 @@ function displaySpecies() {
 
             var id = $(this).attr("id");
             current = parseInt(id); // current is equivalent to the position in the species list, which is the same as the id
-            console.log("current is " + id + " " + species[id].name);
 
             displaySpecies(); // speed up by only change background colors
-
         });
     });
 
