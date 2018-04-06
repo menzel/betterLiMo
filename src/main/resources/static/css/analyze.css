@@ -21,13 +21,14 @@ body {
 
 #magnifier{
     width: 200px;
-    height: 230px;
+    height: 200px;
     margin-top: 20px;
     margin-bottom: 20px;
 }
 
 #magcanvas{
     margin-top: 5px;
+    border: 1px solid gray;
 }
 
 #canvas{
@@ -36,4 +37,8 @@ body {
 
 #pos{
     font-size: xx-small;
+}
+
+#btns_left{
+    width: 100%;
 }

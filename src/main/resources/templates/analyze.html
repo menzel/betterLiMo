@@ -50,7 +50,7 @@
 
         <table id="species" class="table">
             <thead>
-                <tr><th>Gattung</th>
+                <tr><th>Art</th>
                     <th>Fläche (mm^2)</th>
                     <th>Farbe</th>
                 </tr>
@@ -58,10 +58,10 @@
             <tbody></tbody>
         </table>
 
-        <div class="btn-group btn-group-vertical" role="group" aria-label="...">
+        <div id="btns_left" class="btn-group btn-group-vertical" role="group" aria-label="...">
 
             <div class="input-group">
-                <select data-width="200px" class="selectpicker test" id="speciesselect" data-live-search="true">
+                <select data-width="300px" class="selectpicker test" id="speciesselect" data-live-search="true" title="Wählen Sie zuerst eine Art">
 
 
                     <th:block th:each="entry: ${lichen}">
@@ -75,7 +75,7 @@
                         </optgroup>
                     </th:block>
                 </select>
-                <button type="button" class="btn btn-outline-info" onclick="addSpecies()">Gattung hinzufügen</button>
+                <button type="button" hidden=hidden class="btn btn-outline-info" onclick="addSpecies()">Art hinzufügen</button>
             </div>
 
             <br>
@@ -86,7 +86,9 @@
 
             <br>
 
-            <input type="button" class="btn btn-outline-warning" onclick="location.href='../';" value="Upload a new slide" />
+            <input type="button" class="btn btn-outline-warning" onclick="location.href='../';" value="Neue Folie hochladen" />
+
+            <input type="button" class="btn btn-outline-warning" onclick="location.href='../';" value="Neue Folie hochladen" />
         </div>
 
     </div>
@@ -113,15 +115,6 @@
         <div class="btn-group btn-group-vertical" role="group" aria-label="...">
             <button type="button" class="btn btn-outline-secondary" onclick="undo()">Rückgängig</button>
             <br>
-
-            <div class="input-group">
-                <label for="tolerance">Füll-Schwellwert:&nbsp;</label>
-
-                <span class="input-group-btn">
-                    <input type="number" id="tolerance" value="80" min="0" max="150"/>
-                </span>
-
-            </div>
         </div>
 
         <div id="magnifier">
@@ -131,6 +124,7 @@
                     <button id="zoom2" type="button" class="btn btn-outline-primary" onclick="setZoom(2)">2x</button>
                     <button id="zoom4" type="button" class="btn btn-outline-secondary" onclick="setZoom(4)">4x</button>
                     <button id="zoom6" type="button" class="btn btn-outline-secondary" onclick="setZoom(6)">6x</button>
+                    <button id="zoom8" type="button" class="btn btn-outline-secondary" onclick="setZoom(8)">8x</button>
                 </div>
             </div>
 
@@ -163,8 +157,15 @@
 
     // selector for species
     $('.selectpicker').selectpicker({
-        style: 'btn btn-info'
+        style: 'btn btn-outline-info'
     });
+
+    $(function() {
+        $('.selectpicker').on('change', function(){
+            addSpecies()
+        });
+    });
+
 </script>
 
 
@@ -220,26 +221,16 @@
     document.addEventListener('mousewheel',function(event){
         event.preventDefault();
 
-        var element = document.getElementById("tolerance");
-        var curr = parseInt(element.value);
 
         if(event.deltaY < 0) {
             // console.log("up");
-            curr += 1;
+            setZoom(zoomlevel + 2)
         } else {
             // console.log("down");
-            curr -= 1;
+            setZoom(zoomlevel - 2)
         }
 
-        if(curr < 0) curr = 0;
-        if(curr > 150) curr = 150;
-
-        element.value = curr;
-        element.style.backgroundColor = "#ff874f";
-
-        setTimeout(function() {
-            element.style.backgroundColor = "";
-        }, 500);
+        update_zoom(event);
 
         return false;
     }, false);
@@ -289,7 +280,7 @@
 
         var col = getCurrentColor();
         var cfg = {};
-        cfg.tolerance = parseInt(document.getElementById("tolerance").value);
+        cfg.tolerance = 80;
 
         // do bucket fill on lower canvas
         var bucket = Bucket(can, cfg, event, col);
@@ -327,8 +318,7 @@
         offsetx = document.getElementById("SvgjsSvg1001").getBoundingClientRect().top;
     };
 
-
-    svg.on('mousemove', function (event) {
+    function update_zoom(event) {
 
         var x = Math.round(event.pageX - offsety); //TODO set relative value
         var y = Math.round(event.pageY - offsetx);
@@ -348,7 +338,9 @@
         zoomCtx.moveTo(70,100);
         zoomCtx.lineTo(130,100);
         zoomCtx.stroke();
-    });
+    }
+
+    svg.on('mousemove', update_zoom);
 
     //force draw to lower canvas on mouseenter for zoom
     svg.on('mouseenter', function () {
@@ -357,7 +349,7 @@
 
     //clear zoom rect on mouse exit
     svg.on('mouseout', function (event) {
-        zoomCtx.clearRect(0,0,200,200);
+        zoomCtx.clearRect(0,0,250,250);
     });
 
 
@@ -371,17 +363,22 @@
     }
 
     function setZoom(val) {
+
+        if(val < 2) val = 2;
+        if(val > 8) val = 8;
+
+
         zoomlevel = val;
 
-        for(var i = 2; i <= 6; i+=2){
+        for(var i = 2; i <= 8; i+=2){
             document.getElementById("zoom" + i).classList.remove("btn-outline-primary");
             document.getElementById("zoom" + i).classList.add("btn-outline-secondary");
         }
 
         document.getElementById("zoom" + val).classList.remove("btn-outline-secondary");
         document.getElementById("zoom" + val).classList.add("btn-outline-primary");
-    }
 
+    }
 
 </script>
 
