@@ -16,6 +16,59 @@ function tolerance_equal(array_one, offset, array_two, tolerance) {
     return true;
 }
 
+function fill_border(borderpoint, seen, image_data, colour, get_point_offset, width, height) {
+
+    var points = [];
+    var point, x,y, offset, x2, y2, key, i, steps = flood_fill.steps;
+    var n = borderpoint.length;
+    // colour = [31,255,1,255]; //border color green
+
+
+    while(!!(point = borderpoint.pop())) {
+        x = point.x;
+        y = point.y;
+        offset = get_point_offset(x, y);
+
+        i = flood_fill.fill_ways;
+
+        while(i--) {
+
+            if(i < 4) {
+                image_data[offset + i] = colour[i];
+            }
+
+            // Get the new coordinate by adjusting x and y based on current step
+            x2 = x + steps[i][0];
+            y2 = y + steps[i][1];
+            key = x2 + ',' + y2;
+
+            // If new coordinate is out of bounds, or we've already added it, then skip to
+            // trying the next neighbour without adding this one
+            if(x2 < 0 || y2 < 0 || x2 >= width || y2 >= height || seen[key]) {
+                continue;
+            }
+
+            seen[key] = true;
+            points.push({ x: x2, y: y2 });
+        }
+    }
+
+    n += points.length;
+
+    while(!!(point = points.pop())) {
+        i = 3;
+
+        offset = get_point_offset(point.x, point.y);
+
+        while(i >= 0) {
+            image_data[offset + i] = colour[i];
+            i--;
+        }
+    }
+
+    return n;
+}
+
 // The actual flood fill implementation
 function flood_fill(image_data, get_point_offset, point, colour, target, tolerance, width, height) {
     var points = [point],
@@ -30,6 +83,7 @@ function flood_fill(image_data, get_point_offset, point, colour, target, toleran
         y2;
 
     var m = 0;
+    var borderpoint = [];
 
     // Keep going while we have points to walk
     while(!!(point = points.pop())) {
@@ -39,6 +93,8 @@ function flood_fill(image_data, get_point_offset, point, colour, target, toleran
 
         // Move to next point if this pixel isn't within tolerance of the colour being filled
         if(!tolerance_equal(image_data, offset, target, tolerance)) {
+            borderpoint.push({x: x,y :y});
+
             continue;
         }
 
@@ -68,7 +124,10 @@ function flood_fill(image_data, get_point_offset, point, colour, target, toleran
             seen[key] = true;
         }
     }
-    return m;
+
+    var tmp = fill_border(borderpoint, seen, image_data, colour, get_point_offset, width, height);
+
+    return m+tmp;
 }
 
 // Static props for adjustment steps to use in fill algorithm (4-way is default) and a getter
