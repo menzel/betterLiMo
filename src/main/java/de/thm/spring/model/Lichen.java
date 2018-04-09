@@ -10,8 +10,8 @@ import java.util.*;
  * Loads and serves the list of lichen for the gui from the file ARTENLISE.INI
  */
 public class Lichen {
+    private File initfile;
 
-    private File initfile = new File("ARTENLISTE.INI");
     private Map<String, List<String>> lichen;
     private static Lichen instance;
 
@@ -32,6 +32,13 @@ public class Lichen {
 
     private Lichen(){
         lichen = new HashMap<>();
+
+        if(System.getenv("HOME").contains("menzel")){
+            initfile = new File("ARTENLISTE.INI");
+        } else{
+            initfile = new File("/home/mmnz21/ARTENLISTE.INI");
+        }
+
         init(initfile);
     }
 
