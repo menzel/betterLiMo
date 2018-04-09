@@ -178,11 +178,13 @@
     /*<![CDATA[*/
     'use strict';
 
+    var lichen = [[${lichen}]];
+
 
     // Init svg  ///////////////////
 
-    var svg = SVG("drawing").size(1131,800);
-    var img = svg.image([[${imagepath}]], 1131, 800);
+    var svg = SVG("drawing").size([[${width}]],800);
+    var img = svg.image([[${imagepath}]], [[${width}]], 800);
 
     var XMLS = new XMLSerializer();
     var inp_xmls = XMLS.serializeToString(svg.node);

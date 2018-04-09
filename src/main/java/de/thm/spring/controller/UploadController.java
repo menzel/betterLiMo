@@ -9,7 +9,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
 import javax.servlet.http.HttpSession;
+import java.awt.image.BufferedImage;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -39,9 +41,6 @@ public class UploadController {
         return Files.readAllBytes(serverFile.toPath());
     }
 
-
-
-
     private String createImage(String name, MultipartFile file) {
         try {
             createLiMoImagesDirIfNeeded();
@@ -70,6 +69,7 @@ public class UploadController {
     public String uploadGet(Model model) {
 
 
+        model.addAttribute("width", 1132);
         model.addAttribute("imagepath", "/img/bild.jpg");
         model.addAttribute("filename", "Beispiel.jpg");
 
@@ -87,15 +87,28 @@ public class UploadController {
 
         DefaultExecutor exe = new DefaultExecutor();
 
+        int w;
+        int h;
+
         try {
             exe.execute(CommandLine.parse(cmd));
+
+            BufferedImage img = ImageIO.read(new File(path));
+            w = img.getWidth();
+            h = img.getHeight();
+
         } catch (IOException e) {
             e.printStackTrace();
+            return "error";
         }
+
+        double f = 800.0/h;
+        w *= f;
+
+        model.addAttribute("width", w);
 
         model.addAttribute("imagepath", "image/" + file.getOriginalFilename());
         model.addAttribute("filename", file.getOriginalFilename());
-
         model.addAttribute("lichen", Lichen.getInstance().getLichen());
 
         return "analyze";

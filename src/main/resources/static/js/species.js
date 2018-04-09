@@ -39,10 +39,20 @@ function addSpecies() {
     addSpeciesToTable(name);
 }
 
+function getkind(name) {
+
+    for(var key in lichen){
+        if(lichen[key].includes(name)) return key;
+    }
+
+    return "Unbekannt";
+}
+
 function addSpeciesToTable(name) {
 
     var spec = {};
     spec.name = name;
+    spec.kind = getkind(name);
     spec.color = nextColor();
     spec.id = nextid;
     nextid++;
@@ -67,7 +77,7 @@ function getCurrentColor(){
 
     // this is the first function called upon click, so init a new species here
     if(current === -1){
-        addSpeciesToTable("Unknown");
+        addSpeciesToTable("Unbekannt");
     }
 
     return species[current].color;
@@ -164,7 +174,7 @@ function showresults(){
         tmp += ";";
         tmp += species[i].name;
         tmp += ";";
-        tmp += species[i].name;
+        tmp += species[i].kind;
         tmp += ";";
         tmp += area;
         tmp += ";";
@@ -172,13 +182,14 @@ function showresults(){
         tmp += ";";
         tmp += count;
         tmp += ";";
-        tmp += species[i].color;
+        tmp += species[i].color.substring(1);
         tmp += ";";
 
         results.push(tmp);
     }
 
-    return results.join("\n");
+    return results.join("%0A%0D");
+
 }
 
 
