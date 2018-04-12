@@ -63,9 +63,6 @@ function addSpeciesToTable(name) {
     displaySpecies();
 }
 
-// 1200x800px: 289790
-var factor = (584937 * 1.00057647582760156366)/(200*200); // px^2 / mm ^2
-
 function addArea(px, id) {
     var area = px/factor;
 

@@ -171,6 +171,16 @@
 </script>
 
 
+
+<script th:inline="javascript" async="async">
+    /*<![CDATA[*/
+    'use strict';
+
+    var lichen = [[${lichen}]];
+
+</script>
+
+
 <script src="/js/species.js" th:href="@{/js/species.js}"></script>
 
 
@@ -180,11 +190,28 @@
 
     var lichen = [[${lichen}]];
 
+    var screen_w = $(window).width();
+
+    // Init svg  ///////////////////
+    var width = [[${width}]];
+    var height = 800;
+    var screenfactor = 1;
+
+
+    if(screen_w * 0.666 < width) {
+        screenfactor = (0.666 * screen_w) / width;
+        width *= screenfactor;
+        height *= screenfactor;
+    }
+
+    // 1200x800px: 289790
+    var factor = (584937 * 1.00057647582760156366)/(200*200); // px^2 / mm ^2
+    factor = factor * Math.pow(screenfactor, 2);
 
     // Init svg  ///////////////////
 
-    var svg = SVG("drawing").size([[${width}]],800);
-    var img = svg.image([[${imagepath}]], [[${width}]], 800);
+    var svg = SVG("drawing").size(width, height);
+    var img = svg.image([[${imagepath}]], width, height);
 
     var XMLS = new XMLSerializer();
     var inp_xmls = XMLS.serializeToString(svg.node);
@@ -261,7 +288,7 @@
         }
         else {
             option.stroke = "#fff";
-            option['stroke-width'] = 10;
+            option['stroke-width'] = 2;
         }
     });
 
