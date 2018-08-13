@@ -83,7 +83,7 @@ public class UploadController {
     public String uploadPost(Model model, @RequestParam("file") MultipartFile file, HttpSession httpSession) {
 
         String path = createImage(file.getOriginalFilename(), file);
-        String cmd = "convert " + path +  " -level 30%,80% -sharpen 0x2 "  + path;
+        String cmd = "convert " + path +  " -level 1%,95% -sharpen 0x2 "  + path;
 
         DefaultExecutor exe = new DefaultExecutor();
 
@@ -99,6 +99,7 @@ public class UploadController {
 
         } catch (IOException e) {
             e.printStackTrace();
+            model.addAttribute("errormessage", "Die hochgeladene Datei konnte nicht gelesen werden. Die Datei muss im Format .jpg oder .png vorliegen.");
             return "error";
         }
 
