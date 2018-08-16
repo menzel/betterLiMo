@@ -82,7 +82,8 @@ public class UploadController {
     @RequestMapping(value = "/upload", method = RequestMethod.POST)
     public String uploadPost(Model model, @RequestParam("file") MultipartFile file, HttpSession httpSession) {
 
-        String path = createImage(file.getOriginalFilename(), file);
+        String filename = file.getOriginalFilename().replaceAll(" ", "_");
+        String path = createImage(filename, file);
         String cmd = "convert " + path +  " -level 1%,95% -sharpen 0x2 "  + path;
 
         DefaultExecutor exe = new DefaultExecutor();
@@ -108,8 +109,8 @@ public class UploadController {
 
         model.addAttribute("width", w);
 
-        model.addAttribute("imagepath", "image/" + file.getOriginalFilename());
-        model.addAttribute("filename", file.getOriginalFilename());
+        model.addAttribute("imagepath", "image/" + filename);
+        model.addAttribute("filename", filename);
         model.addAttribute("lichen", Lichen.getInstance().getLichen());
 
         return "analyze";
