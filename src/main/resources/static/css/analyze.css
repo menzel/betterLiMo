@@ -5,6 +5,14 @@ body {
     overflow: hidden;
 }
 
+table {
+    word-wrap: break-word;
+}
+
+table td {
+    max-width: 150px;
+}
+
 #drawing {
     display: block;
     background: #fff;
@@ -39,4 +47,13 @@ body {
 
 #btns_left{
     width: 100%;
+}
+
+#btns_left button {
+    margin-bottom: 15px;
+}
+
+
+#btns_left span{
+    font-size: 9pt;
 }
