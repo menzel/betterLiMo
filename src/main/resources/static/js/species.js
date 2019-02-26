@@ -157,7 +157,7 @@ function displaySpecies() {
 
 // Create results file ///////////////////
 
-function showresults(){
+function generateCsv(){
     var results = [];
     results.push("id;Gattung;Art;Fläche [mm^2]; Fläche [%]; Anzahl Thalli; Farbe [RGB]");
 
@@ -189,12 +189,81 @@ function showresults(){
 
 }
 
+function getExcel(filename){
+
+    let dat = [];
+    dat.push([
+        {
+        value: "ID",
+        type: "string"
+        }, {
+        value: "Gattung",
+        type: "string"
+        }, {
+        value: "Art",
+        type: "string"
+        },{
+        value: "Fläche [mm^2]",
+        type: "string"
+        },{
+        value: "Fläche [%]",
+        type: "string"
+        },{
+        value: "Anzahl Thalli",
+        type: "string"
+        },{
+        value: "Farbe [RGB]",
+        type: "string"
+        }
+    ]);
+
+        for(var i = 0; i < species.length; i++) {
+            var area = getarea(species[i].id);
+            var count = getthallicount(species[i].id);
+
+            dat.push([
+                {
+                    value: species[i].id,
+                    type: "number"
+                },{
+                    value: species[i].name,
+                    type: "string"
+                },{
+                    value: species[i].kind,
+                    type: "string"
+                },{
+                    value: area,
+                    type: "number"
+                },{
+                    value: 100*area/(200*200),
+                    type: "number"
+                },{
+                    value: count,
+                    type: "number"
+                },{
+                    value: species[i].color.substring(1),
+                    type: "string"
+                }
+            ]);
+        }
+
+    const config = {
+        filename: filename,
+        sheet: {
+            data: dat
+        }
+    };
+
+    zipcelx(config);
+}
+
+
 
 // Results download ///////////////////
 
-function download(filename) {
+function getCsv(filename) {
     var element = document.createElement('a');
-    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + showresults());
+    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + generateCsv(filename));
     element.setAttribute('download', filename);
 
     element.style.display = 'none';

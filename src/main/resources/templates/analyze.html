@@ -36,6 +36,8 @@
 
     <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
     <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+
+    <script type="text/javascript" src="/js/zipcelx.js"></script>
 </head>
 
 <body>
@@ -51,7 +53,7 @@
 
         <table id="species" class="table">
             <thead>
-                <tr><th>Art</th>
+                <tr><th class="art">Art</th>
                     <th>Fläche (mm^2)</th>
                     <th>Farbe</th>
                 </tr>
@@ -83,7 +85,13 @@
 
             <br>
 
-            <button type="button" class="btn btn-outline-success" th:onclick="${'javascript:download(''' + filename + '_ergebnisse.csv'')'}">Ergebnisse exportieren</button>
+
+            <div class="btn-group" role="group" aria-label="Export buttons">
+                <span>Ergebnisse exportieren</span>
+                <button type="button" class="btn btn-outline-success" th:onclick="${'javascript:getCsv(''' + filename + '_ergebnisse.csv'')'}">csv</button>
+                <button type="button" class="btn btn-outline-success" th:onclick="${'javascript:getExcel(''' + filename + '_ergebnisse.csv'')'}">xlsx</button>
+            </div>
+
 
             <br>
 
