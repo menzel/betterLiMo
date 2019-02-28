@@ -166,10 +166,15 @@ function generateCsv(){
         var area = getarea(species[i].id);
         var count = getthallicount(species[i].id);
 
+        var kuerzel =  species[i].name.split(",")[1];
+        var name =  species[i].name.split(",")[0];
+
 
         tmp += species[i].id;
         tmp += ";";
-        tmp += species[i].name;
+        tmp += kuerzel;
+        tmp += ";";
+        tmp += name;
         tmp += ";";
         tmp += species[i].kind;
         tmp += ";";
@@ -197,6 +202,9 @@ function getExcel(filename){
         value: "ID",
         type: "string"
         }, {
+        value: "Kürzel",
+        type: "string"
+        },{
         value: "Gattung",
         type: "string"
         }, {
@@ -220,13 +228,18 @@ function getExcel(filename){
         for(var i = 0; i < species.length; i++) {
             var area = getarea(species[i].id);
             var count = getthallicount(species[i].id);
+            var kuerzel =  species[i].name.split(",")[1];
+            var name =  species[i].name.split(",")[0];
 
             dat.push([
                 {
                     value: species[i].id,
                     type: "number"
                 },{
-                    value: species[i].name,
+                    value: kuerzel,
+                    type: "string"
+                }, {
+                    value: name,
                     type: "string"
                 },{
                     value: species[i].kind,
@@ -247,6 +260,8 @@ function getExcel(filename){
             ]);
         }
 
+    filename = filename.replace(/\.?jpg|\.?csv/g,"");
+
     const config = {
         filename: filename,
         sheet: {
@@ -263,6 +278,7 @@ function getExcel(filename){
 
 function getCsv(filename) {
     var element = document.createElement('a');
+    filename = filename.replace(/\.?jpg/g,"");
     element.setAttribute('href', 'data:text/plain;charset=utf-8,' + generateCsv(filename));
     element.setAttribute('download', filename);
 
