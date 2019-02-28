@@ -10,7 +10,33 @@ table {
 }
 
 table td {
-    max-width: 105px;
+    max-width: 131px;
+}
+table thead th {
+    width: 100%;
+}
+
+.col-7-5 {
+    width: 62.4975%;
+    flex: 0 0 62.4975%;
+}
+
+.col-2-5 {
+    width: 20.8325%;
+    flex: 0 0 20.8325%;
+}
+
+.col-1-5 {
+    width: 12.4995%;
+    flex: 0 0 12.4995%;
+}
+
+.col-7-5, .col-2-5, .col-1-5 {
+    padding-left: 15px;
+    padding-right: 15px;
+    position: relative;
+    box-sizing: border-box;
+    min-height: 1px;
 }
 
 #drawing {
