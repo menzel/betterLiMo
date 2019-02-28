@@ -2,7 +2,9 @@ package de.thm.spring.model;
 
 import org.ini4j.Wini;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
 
@@ -31,17 +33,23 @@ public class Lichen {
     }
 
     private Lichen(){
-        lichen = new HashMap<>();
+        lichen = new TreeMap<>();
 
         if(System.getenv("HOME").contains("menzel")){
-            initfile = new File("ARTENLISTE.INI");
+            initfile = new File("ARTENLISTE.csv");
         } else{
             initfile = new File("/home/mmnz21/ARTENLISTE.INI");
         }
 
-        init(initfile);
+        init_neu(initfile);
     }
 
+    /**
+     * Load INI File
+     * Old method for the old ini file
+     * @param initfile
+     */
+    @Deprecated
     private void init(File initfile) {
         try {
             Wini ini  = new Wini(initfile);
@@ -66,6 +74,35 @@ public class Lichen {
 
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+
+    private void init_neu(File initfile){
+
+        try (BufferedReader br = new BufferedReader(new FileReader(initfile))) {
+
+            String line;
+            while ((line = br.readLine()) != null) {
+                if (line.startsWith("#")) continue;
+                String[] parts = line.split(",");
+
+                String section = parts[1];
+
+                if(!lichen.containsKey(section))
+                    lichen.put(section, new ArrayList<>());
+
+                if (parts.length < 3)
+                    lichen.get(section).add(parts[0]);
+                else
+                    lichen.get(section).add(parts[2] + "," + parts[0]);
+            }
+
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        } catch (Exception e){
+            System.err.println("Error loading lichen csv file");
         }
     }
 }
