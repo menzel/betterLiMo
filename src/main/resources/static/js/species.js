@@ -260,7 +260,7 @@ function getExcel(filename){
             ]);
         }
 
-    filename = filename.replace(/\.?jpg|\.?csv/g,"");
+    filename = filename.replace(/\.?jpg|\.?csv|\.?png|\.?pdf/g,"");
 
     const config = {
         filename: filename,
