@@ -88,8 +88,8 @@
 
             <div class="btn-group" role="group" aria-label="Export buttons">
                 <span>Ergebnisse exportieren</span>
-                <button type="button" class="btn btn-outline-success" th:onclick="${'javascript:getCsv(''' + filename + '_ergebnisse.csv'')'}">csv</button>
-                <button type="button" class="btn btn-outline-success" th:onclick="${'javascript:getExcel(''' + filename + '_ergebnisse.csv'')'}">xlsx</button>
+                <button type="button" class="btn btn-outline-success" th:data-filename="${filename}" onclick="getCsv(this.getAttribute('data-filename') + '_ergebnisse.csv');">csv</button>
+                <button type="button" class="btn btn-outline-success" th:data-filename="${filename}" onclick="getExcel(this.getAttribute('data-filename') + '_ergebnisse.csv');">xlsx</button>
             </div>
 
 

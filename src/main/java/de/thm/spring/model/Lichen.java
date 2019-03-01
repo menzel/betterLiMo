@@ -38,10 +38,10 @@ public class Lichen {
         if(System.getenv("HOME").contains("menzel")){
             initfile = new File("ARTENLISTE.csv");
         } else{
-            initfile = new File("/home/mmnz21/ARTENLISTE.INI");
+            initfile = new File("/home/mmnz21/ARTENLISTE.csv");
         }
 
-        init_neu(initfile);
+        init(initfile);
     }
 
     /**
@@ -50,7 +50,7 @@ public class Lichen {
      * @param initfile
      */
     @Deprecated
-    private void init(File initfile) {
+    private void init_old(File initfile) {
         try {
             Wini ini  = new Wini(initfile);
 
@@ -78,7 +78,7 @@ public class Lichen {
     }
 
 
-    private void init_neu(File initfile){
+    private void init(File initfile){
 
         try (BufferedReader br = new BufferedReader(new FileReader(initfile))) {
 

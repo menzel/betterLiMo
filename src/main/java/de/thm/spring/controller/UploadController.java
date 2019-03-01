@@ -1,7 +1,6 @@
 package de.thm.spring.controller;
 
 import de.thm.spring.model.Lichen;
-import org.apache.catalina.servlet4preview.http.HttpServletRequest;
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecutor;
 import org.springframework.stereotype.Controller;
@@ -17,9 +16,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.UUID;
 
 @Controller
 public class UploadController {

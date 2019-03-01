@@ -12,7 +12,6 @@ import org.springframework.context.annotation.ComponentScan;
  */
 @SpringBootApplication
 @ComponentScan(basePackages = "de.thm.spring")
-@EnableAutoConfiguration
 public class Main {
 
     public static void main(String[] args) {
