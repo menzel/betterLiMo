@@ -1,0 +1,9 @@
+# LiMo Lichen and moses analysis tool
+
+Published in:
+Windisch, Ute, and Michael Menzel. "Software for determining the surface area of epiphytes." HERZOGIA 26.2 (2013): 423-427.
+
+as a local .jar-application, now re-written as webapplication which works in your browser.
+
+There is a running version available here with instructions (in German):
+https://limo.mni.thm.de/
